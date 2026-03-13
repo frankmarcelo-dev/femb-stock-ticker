@@ -38,7 +38,6 @@ namespace FembStockTicker.Swagger
         public static void WithSwaggerGenServiceOptions(SwaggerGenOptions options)
         {
             options.DescribeAllParametersInCamelCase();
-
             options.SwaggerDoc(
                 ApiVersion,
                 new OpenApiInfo
@@ -46,8 +45,8 @@ namespace FembStockTicker.Swagger
                     Title = ApiName,
                     Description = ApiDescription,
                     Version = ApiVersion
-                });
-
+                }
+            );
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -71,7 +70,6 @@ namespace FembStockTicker.Swagger
                     new string[]{}
                 }
             });
-
             options.CustomOperationIds(apiDesc =>
             {
                 return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
