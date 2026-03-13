@@ -23,6 +23,7 @@ namespace FembStockTicker.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception");
+                if (context.Response.HasStarted) throw;
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

@@ -21,40 +21,28 @@ namespace FembStockTicker
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<CorrelationIdHeaderMiddleware>();
             app.UseSerilogRequestLogging();
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<CorrelationIdHeaderMiddleware>();
-            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseResponseCaching();
-            app.UseSwagger(SwaggerConfiguration.WithSwaggerOptions);
-            app.UseSwaggerUI(SwaggerConfiguration.WithSwaggerUiOptions);
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger(SwaggerConfiguration.WithSwaggerOptions);
+                app.UseSwaggerUI(SwaggerConfiguration.WithSwaggerUiOptions);
+            }
 
             app.MapControllers();
-
             app.Run();
         }
 
         private static void ConfigureServices(WebApplicationBuilder builder, ConfigurationManager configuration)
         {
             // Configure Swagger
-            var appSettings = configuration.Get<AppSettings>();
-            if (appSettings == null)
-            {
-                appSettings = new AppSettings
-                {
-                    AppConfiguration = new AppConfiguration
-                    {
-                        ApiVersion = "v1",
-                        ApiDescription = "FembStockTicker API",
-                        ApplicationName = "FembStockTicker",
-                        Environment = "Local",
-                        ApplicationHost = "localhost:5091"
-                    },
-                    Auth0 = new Auth0Configuration()
-                };
-            }
+            var appSettings = configuration.Get<AppSettings>()
+                ?? throw new InvalidOperationException("AppSettings configuration is missing.");
             builder.Services.AddSingleton(appSettings);
 
             SwaggerConfiguration.ConfigureSwaggerWith(appSettings.AppConfiguration);
