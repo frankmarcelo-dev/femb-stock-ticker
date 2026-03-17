@@ -16,10 +16,10 @@ namespace FembStockTicker.Swagger
 
         private static SwaggerConfigurationSettings? swaggerOptions;
 
-        private static string ApiName => swaggerOptions!.ApiName;
-        private static string ApiVersion => swaggerOptions!.ApiVersion;
-        private static string ApiDescription => swaggerOptions!.ApiDescription;
-        private static string ApiHost => swaggerOptions!.ApiHost;
+        private static string ApiName => swaggerOptions?.ApiName ?? string.Empty;
+        private static string ApiVersion => swaggerOptions?.ApiVersion ?? string.Empty;
+        private static string ApiDescription => swaggerOptions?.ApiDescription ?? string.Empty;
+        private static string ApiHost => swaggerOptions?.ApiHost ?? string.Empty;
 
         public static void WithSwaggerOptions(SwaggerOptions options)
         {
@@ -72,7 +72,7 @@ namespace FembStockTicker.Swagger
             });
             options.CustomOperationIds(apiDesc =>
             {
-                return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
+                return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : string.Empty;
             });
         }
     

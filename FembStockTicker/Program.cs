@@ -3,6 +3,7 @@ using FembStockTicker.Services;
 using FembStockTicker.Middleware;
 using FembStockTicker.Swagger;
 using FembStockTicker.Config;
+using FembStockTicker.Auth0;
 
 namespace FembStockTicker
 {
@@ -20,7 +21,6 @@ namespace FembStockTicker
             ConfigureServices(builder, builder.Configuration);
 
             var app = builder.Build();
-            // Configure the HTTP request pipeline.
             app.UseMiddleware<CorrelationIdHeaderMiddleware>();
             app.UseSerilogRequestLogging();
             app.UseMiddleware<ExceptionHandlerMiddleware>();
@@ -40,26 +40,21 @@ namespace FembStockTicker
 
         private static void ConfigureServices(WebApplicationBuilder builder, ConfigurationManager configuration)
         {
-            // Configure Swagger
             var appSettings = configuration.Get<AppSettings>()
                 ?? throw new InvalidOperationException("AppSettings configuration is missing.");
             builder.Services.AddSingleton(appSettings);
 
+            // Configure Swagger
             SwaggerConfiguration.ConfigureSwaggerWith(appSettings.AppConfiguration);
-
             builder.Services.AddControllers();
-            // register any application services
             builder.Services.AddSingleton<IWeatherForecastService, WeatherForecastService>();
-
-            // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c => SwaggerConfiguration.WithSwaggerGenServiceOptions(c));
 
-            // authentication/authorization, caching, etc. would be configured here
-            builder.Services.AddAuthentication();
-            builder.Services.AddAuthorization();
+            // Auth0
+            builder.Services.AddAuth0Authentication(appSettings.Auth0);
+            builder.Services.AddAuth0Authorization(appSettings.Auth0);
             builder.Services.AddResponseCaching();
         }
     }
 }
-

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FembStockTicker.Models;
 using FembStockTicker.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FembStockTicker.Controllers
 {
@@ -15,6 +16,7 @@ namespace FembStockTicker.Controllers
             _forecastService = forecastService;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<WeatherForecast[]> Get(int days = 5)
         {
