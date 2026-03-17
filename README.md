@@ -270,7 +270,7 @@ Every request carries a `correlationId` header. In a microservice mesh, pass thi
 Swagger UI is available in **Development** mode at:
 
 ```text
-http://localhost:5091/swagger
+http://localhost:7236/swagger
 ```
 
 The Swagger definition includes:
@@ -298,7 +298,7 @@ dotnet build --configuration Release
 dotnet user-secrets set "Auth0:Domain" "your-tenant.auth0.com" --project FembStockTicker
 dotnet user-secrets set "Auth0:Audience" "https://your-api-identifier" --project FembStockTicker
 
-# Run — API at http://localhost:5091, Swagger at http://localhost:5091/swagger
+# Run — API at http://localhost:7236, Swagger at http://localhost:7236/swagger
 dotnet run --project FembStockTicker
 ```
 

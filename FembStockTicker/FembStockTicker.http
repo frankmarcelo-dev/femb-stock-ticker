@@ -1,4 +1,4 @@
-@FembStockTicker_HostAddress = http://localhost:5091
+@FembStockTicker_HostAddress = http://localhost:7236
 
 GET {{FembStockTicker_HostAddress}}/api/weatherforecast
 Accept: application/json

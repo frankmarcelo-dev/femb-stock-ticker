@@ -12,7 +12,7 @@ ASP.NET Core 8.0 Web API for a stock ticker application. Currently in early deve
 # Build
 dotnet build --configuration Release
 
-# Run (launches at http://localhost:5091, Swagger UI at /swagger)
+# Run (launches at http://localhost:7236, Swagger UI at /swagger)
 dotnet run --project FembStockTicker
 
 # Publish
