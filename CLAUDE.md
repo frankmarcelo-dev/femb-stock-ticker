@@ -39,9 +39,9 @@ There is no test project configured yet.
 ## Key Configuration
 
 - `appsettings.json` — Auth0 domain/audience/scopes, API version, application host, logging (Serilog)
-- Auth0 domain: `dev-0a51rold.au.auth0.com`
+- Auth0 domain: configured via `appsettings.json` / user secrets (not committed)
 - Authorization policies defined in `Auth0ServiceExtensions.cs` check for scope claims
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/azure-webapps-dotnet-core.yml`) deploys to Azure Web App on push to master. Note: the workflow specifies .NET 5 but the project targets .NET 8 — this needs updating.
+GitHub Actions workflow (`.github/workflows/azure-webapps-dotnet-core.yml`) deploys to Azure Web App on push to master. Targets .NET 8, app name `femb-stock-ticker`.
