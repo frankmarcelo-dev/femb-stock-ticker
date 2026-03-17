@@ -297,6 +297,8 @@ dotnet build --configuration Release
 # Set Auth0 secrets (one-time)
 dotnet user-secrets set "Auth0:Domain" "your-tenant.auth0.com" --project FembStockTicker
 dotnet user-secrets set "Auth0:Audience" "https://your-api-identifier" --project FembStockTicker
+dotnet user-secrets set "Auth0:ClientId" "your clientId" --project FembStockTicker
+dotnet user-secrets set "Auth0:ClientSecret" "your clientSecret" --project FembStockTicker
 
 # Run — API at http://localhost:7236, Swagger at http://localhost:7236/swagger
 dotnet run --project FembStockTicker
