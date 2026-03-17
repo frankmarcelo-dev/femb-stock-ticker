@@ -14,5 +14,8 @@
   "dotnet-test-explorer.testProjectPath": "**/*Tests.csproj",
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,
-  "csharp.debug.console": "integratedTerminal"
+  "csharp.debug.console": "integratedTerminal",
+  "cSpell.words": [
+    "Femb"
+  ]
 }
