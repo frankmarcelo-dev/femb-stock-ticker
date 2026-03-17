@@ -1,6 +1,84 @@
-@FembStockTicker_HostAddress = http://localhost:7236
+### ============================================================
+### FembStockTicker — HTTP Request Tests
+### VS Code: install "REST Client" extension (humao.rest-client)
+### JetBrains: built-in HTTP Client support
+###
+### Fill in the Auth0 variables below before running
+### authenticated requests.
+### ============================================================
 
-GET {{FembStockTicker_HostAddress}}/api/weatherforecast
+@host = http://localhost:7236
+
+# Auth0 credentials — fill in from your Auth0 dashboard
+@auth0_domain    = dev-0a51rold.au.auth0.com
+@auth0_client_id     = YOUR_CLIENT_ID
+@auth0_client_secret = YOUR_CLIENT_SECRET
+@auth0_audience      = YOUR_API_AUDIENCE
+
+### ============================================================
+### [1] Fetch Auth0 Token (Machine-to-Machine / Client Credentials)
+###     Run this first, then use {{auth_response.response.body.access_token}}
+###     in the requests below (VS Code REST Client auto-captures it).
+### ============================================================
+
+# @name auth_response
+POST https://{{auth0_domain}}/oauth/token
+Content-Type: application/json
+
+{
+  "client_id": "{{auth0_client_id}}",
+  "client_secret": "{{auth0_client_secret}}",
+  "audience": "{{auth0_audience}}",
+  "grant_type": "client_credentials"
+}
+
+###
+
+### ============================================================
+### [2] GET /api/weatherforecast — No token (expect 401)
+### ============================================================
+
+GET {{host}}/api/weatherforecast
 Accept: application/json
+
+###
+
+### ============================================================
+### [3] GET /api/weatherforecast — Authenticated, default (5 days)
+### ============================================================
+
+GET {{host}}/api/weatherforecast
+Accept: application/json
+Authorization: Bearer {{auth_response.response.body.access_token}}
+
+###
+
+### ============================================================
+### [4] GET /api/weatherforecast?days=3 — Authenticated, 3 days
+### ============================================================
+
+GET {{host}}/api/weatherforecast?days=3
+Accept: application/json
+Authorization: Bearer {{auth_response.response.body.access_token}}
+
+###
+
+### ============================================================
+### [5] GET /api/weatherforecast?days=10 — Authenticated, 10 days
+### ============================================================
+
+GET {{host}}/api/weatherforecast?days=10
+Accept: application/json
+Authorization: Bearer {{auth_response.response.body.access_token}}
+
+###
+
+### ============================================================
+### [6] GET /api/weatherforecast — Tampered token (expect 401)
+### ============================================================
+
+GET {{host}}/api/weatherforecast
+Accept: application/json
+Authorization: Bearer this.is.not.a.valid.token
 
 ###
