@@ -1,0 +1,12 @@
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/.claude
+**/bin
+**/obj
+**/out
+**/*.user
+**/*.suo
+**/Dockerfile*
+**/.dockerignore
