@@ -16,26 +16,24 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
-            9.0.x
+          dotnet-version: 'dotnet8.0'
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/femb-software-ticker"
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/femb-stock-ticker"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/femb-software-ticker
+          path: ${{env.DOTNET_ROOT}}/femb-stock-ticker
 
   deploy:
     runs-on: windows-latest
@@ -49,7 +47,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -64,4 +62,4 @@ jobs:
           app-name: 'femb-stock-ticker'
           slot-name: 'Production'
           package: .
-          
+
