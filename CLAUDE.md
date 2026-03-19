@@ -65,4 +65,17 @@ There is no test project configured yet.
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/azure-webapps-dotnet-core.yml`) deploys to Azure Web App on push to master. Targets .NET 8, app name `femb-stock-ticker`.
+Four GitHub Actions workflows in `.github/workflows/`:
+
+- **`master_femb-stock-ticker.yml`** — Deploys to Azure Web App on push to `master`. Uses OIDC federated identity (Azure/login@v2 + azure/webapps-deploy@v3), Windows runner, .NET 8, app name `femb-stock-ticker`.
+- **`claude.yml`** — Enables `@claude` mentions in issues/PRs to trigger Claude Code interactively.
+- **`claude-code-review.yml`** — Runs automated code review on every PR via Claude Code.
+- **`claude-code-pr-autodoc.yml`** — Auto-generates PR documentation when PRs are merged to main.
+
+## Key Dependencies (FembStockTicker.csproj)
+
+- `Auth0.AspNetCore.Authentication` v1.4.1
+- `FluentValidation` v12.1.1
+- `Microsoft.AspNetCore.Authentication.JwtBearer` v8.0.0
+- `Serilog.AspNetCore` v8.0.0
+- `Swashbuckle.AspNetCore` v6.6.2
