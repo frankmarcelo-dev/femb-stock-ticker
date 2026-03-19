@@ -128,30 +128,46 @@ builder.Services.AddAuth0Authorization(appSettings.Auth0);
 ```text
 femb-stock-ticker/
 ├── FembStockTicker/
-│   ├── Auth0/               # Auth0 extension methods (authn + authz setup)
-│   ├── Config/              # Strongly-typed settings classes
-│   │   ├── AppSettings.cs   # Root configuration object
-│   │   ├── Auth0Configuration.cs
-│   │   ├── CacheSettings.cs
-│   │   ├── HealthCheckSettings.cs
-│   │   └── ...
-│   ├── Controllers/         # API endpoints — thin, delegate to services
+│   ├── Auth0/                         # Auth0 extension methods (authn + authz setup)
+│   ├── Config/                        # Strongly-typed settings classes
+│   │   ├── AppSettings.cs             # Root configuration object
+│   │   ├── AppConfiguration.cs        # API version, identifier, host, environment
+│   │   ├── ApiDirectory.cs            # External API directory / downstream services
+│   │   ├── Auth0Configuration.cs      # Auth0 domain, audience, scopes
+│   │   ├── CacheSettings.cs           # Response cache duration settings
+│   │   ├── CacheApplicationConfiguration.cs
+│   │   ├── HealthCheckSettings.cs     # Health probe configuration
+│   │   ├── LoggingSettings.cs         # Logging level and sink configuration
+│   │   ├── Splunk.cs                  # Splunk sink configuration (planned)
+│   │   └── Trace.cs                   # Distributed tracing configuration
+│   ├── Controllers/                   # API endpoints — thin, delegate to services
 │   ├── Middleware/
 │   │   ├── CorrelationIdHeaderMiddleware.cs
 │   │   └── ExceptionHandlerMiddleware.cs
-│   ├── Models/              # Data transfer objects and domain models
-│   ├── Services/            # Business logic behind interfaces
+│   ├── Models/                        # Data transfer objects and domain models
+│   ├── Services/                      # Business logic behind interfaces
 │   │   ├── IWeatherForecastService.cs
 │   │   └── WeatherForecastService.cs
-│   ├── Swagger/             # OpenAPI configuration and custom attributes
-│   ├── Program.cs           # Composition root — DI wiring and middleware pipeline
+│   ├── Swagger/                       # OpenAPI configuration and custom attributes
+│   │   ├── Attributes/
+│   │   │   └── ConsumesHeaderAttribute.cs  # Documents required request headers
+│   │   ├── SwaggerConfiguration.cs
+│   │   ├── SwaggerConfigurationSettings.cs
+│   │   └── SwaggerHeaderAttribute.cs
+│   ├── Program.cs                     # Composition root — DI wiring and middleware pipeline
+│   ├── FembStockTicker.http           # HTTP request file for manual API testing
 │   ├── appsettings.json
 │   └── appsettings.Development.json
-├── .github/workflows/       # GitHub Actions CI/CD
-├── Dockerfile               # Multi-stage build (sdk:8.0 → aspnet:8.0 runtime)
-├── docker-compose.yml       # Compose config — reads Auth0 secrets from .env
-├── .env.example             # Template for local Docker secrets (copy to .env)
+├── .github/workflows/                 # GitHub Actions CI/CD
+│   ├── master_femb-stock-ticker.yml   # Deploy to Azure Web App on push to master
+│   ├── claude.yml                     # @claude mention handler for issues/PRs
+│   ├── claude-code-review.yml         # Automated PR code review via Claude
+│   └── claude-code-pr-autodoc.yml     # Auto-generate PR docs on merge to master
+├── Dockerfile                         # Multi-stage build (sdk:8.0 → aspnet:8.0 runtime)
+├── docker-compose.yml                 # Compose config — reads Auth0 secrets from .env
+├── .env.example                       # Template for local Docker secrets (copy to .env)
 ├── .dockerignore
+├── test-api.sh                        # Shell script for manual API endpoint testing
 └── femb-stock-ticker.sln
 ```
 
@@ -340,13 +356,17 @@ dotnet publish -c Release -o ./publish
 
 ## CI/CD
 
-GitHub Actions workflow at `.github/workflows/azure-webapps-dotnet-core.yml` deploys to **Azure Web App** on push to `master`.
+GitHub Actions workflows in `.github/workflows/`:
 
-> **Note:** The workflow currently specifies .NET 5. Update `dotnet-version` to `8.0.x` to match the project target framework.
+| Workflow | Trigger | Purpose |
+| --- | --- | --- |
+| `master_femb-stock-ticker.yml` | Push to `master` | Deploy to Azure Web App via OIDC federated identity |
+| `claude.yml` | `@claude` mention in issues/PRs | Interactive Claude Code assistance |
+| `claude-code-review.yml` | Pull request opened | Automated code review via Claude |
+| `claude-code-pr-autodoc.yml` | PR merged to `master` | Auto-generate PR documentation |
 
 Recommended secrets to configure in GitHub Actions:
 
-- `AZURE_WEBAPP_PUBLISH_PROFILE`
 - `AUTH0_DOMAIN`
 - `AUTH0_AUDIENCE`
 - `NEW_RELIC_LICENSE_KEY`
