@@ -16,6 +16,7 @@ A production-ready **ASP.NET Core 8.0 Web API** for a stock ticker service. Desi
 - [Observability](#observability)
 - [API Documentation](#api-documentation)
 - [Getting Started](#getting-started)
+- [Docker](#run-with-docker)
 - [CI/CD](#cicd)
 - [Roadmap](#roadmap)
 
@@ -31,6 +32,7 @@ A production-ready **ASP.NET Core 8.0 Web API** for a stock ticker service. Desi
 | API Docs             | Swagger / OpenAPI 3                      |
 | Observability        | Correlation ID tracing, New Relic        |
 | Caching              | ASP.NET Response Caching                 |
+| Containerization     | Docker (multi-stage), Docker Compose     |
 | CI/CD                | GitHub Actions → Azure Web App           |
 
 ---
@@ -146,6 +148,10 @@ femb-stock-ticker/
 │   ├── appsettings.json
 │   └── appsettings.Development.json
 ├── .github/workflows/       # GitHub Actions CI/CD
+├── Dockerfile               # Multi-stage build (sdk:8.0 → aspnet:8.0 runtime)
+├── docker-compose.yml       # Compose config — reads Auth0 secrets from .env
+├── .env.example             # Template for local Docker secrets (copy to .env)
+├── .dockerignore
 └── femb-stock-ticker.sln
 ```
 
@@ -287,6 +293,7 @@ The Swagger definition includes:
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - An Auth0 tenant with an API registered (for authenticated endpoints)
+- [Docker](https://docs.docker.com/get-docker/) (optional, for containerized runs)
 
 ### Run Locally
 
@@ -302,6 +309,25 @@ dotnet user-secrets set "Auth0:ClientSecret" "your clientSecret" --project FembS
 
 # Run — API at http://localhost:7236, Swagger at http://localhost:7236/swagger
 dotnet run --project FembStockTicker
+```
+
+### Run with Docker
+
+```bash
+# Copy and fill in Auth0 credentials
+cp .env.example .env
+
+# Start with Docker Compose — API at http://localhost:8080, Swagger at http://localhost:8080/swagger
+docker compose up --build
+
+# Or build and run manually
+docker build -t femb-stock-ticker .
+docker run -p 8080:8080 \
+  -e Auth0__Domain=your-domain \
+  -e Auth0__Audience=your-audience \
+  -e Auth0__ClientId=your-client-id \
+  -e Auth0__ClientSecret=your-client-secret \
+  femb-stock-ticker
 ```
 
 ### Publish

@@ -19,6 +19,27 @@ dotnet run --project FembStockTicker
 dotnet publish -c Release -o <output-directory>
 ```
 
+## Docker
+
+```bash
+# Build image
+docker build -t femb-stock-ticker .
+
+# Run with env vars
+docker run -p 8080:8080 \
+  -e Auth0__Domain=your-domain \
+  -e Auth0__Audience=your-audience \
+  -e Auth0__ClientId=your-client-id \
+  -e Auth0__ClientSecret=your-client-secret \
+  femb-stock-ticker
+
+# Or use docker compose (copy .env.example → .env and fill in values)
+cp .env.example .env
+docker compose up --build
+```
+
+App listens on port `8080` inside the container. Swagger UI at `http://localhost:8080/swagger`.
+
 There is no test project configured yet.
 
 ## Architecture
